@@ -1,4 +1,5 @@
 numpy
 matplotlib
+matplotlib.pyplot
 pytest
 pytest-pycodestyle
