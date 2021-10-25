@@ -7,6 +7,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import logging
 
+
 # Begin Modular Function Code
 def main():
     """
