@@ -112,7 +112,6 @@ def find_rheobase_chronaxie(duration_data, voltage_amp_data):
     rheobase = round(rheobase, 3)
     print("Rheobase = {} V".format(rheobase))
     # Calculate Chronaxie
-    # (2 * Rheobase) = A * chronaxie^(B)q2
     index, double_rheobase = find_nearest(voltage_amp_data, 2*rheobase)
     print("Double Rheobase = {} V".format(double_rheobase))
     chronaxie = duration_data[index]
@@ -121,19 +120,35 @@ def find_rheobase_chronaxie(duration_data, voltage_amp_data):
     return rheobase, chronaxie
 
 
-#def generate_capture():
+def generate_capture_data(filename: str, duration: int, capture_voltage: int):
+    """
+    This function creates a file and generates data
 
+    The data generated has the following columns:
+            (1) stimulus duration, (2) Stimulus Voltage Amplitude,
+            (3) Capture Status (1 = capture, 0 = no capture)
+
+    """
+    data_length = 500      # length of data
+    stim_duration = duration * np.ones((data_length))
+    stim_voltage = np.arange(0, 5, 5/data_length)
+    capture_status = np.zeros((data_length))
+    index = np.where(stim_voltage==capture_voltage)
+    index = index[0][0]
+    capture_status[index:] = 1
+    data = np.column_stack([stim_duration, stim_voltage, capture_status])
+    np.savetxt(filename , data, fmt=['%.2f','%.2f','%d'], delimiter='\t')
 
 
 def main_patient_1():
     """
-    This function will drive the energy saving algorithm
+    This function takes in experimental data and returns
     """
     pulse_duration = [0.1, 0.2, 0.3, 0.4, 0.5, 1, 1.4]    # [ms] Pulse duration of patient 1
     voltage_amp = [5, 3.5, 2.8, 2.6, 2.4, 2.2, 2.2]   # [V] Voltage amplitude of patient 1
     interp_pulse_duration, interp_voltage_amp = interpolate_data_points(pulse_duration,
                                                                         voltage_amp)
-    duration_val_1 = 0.8    # [ms] Duration Value 
+    duration_val_1 = 0.8    # [ms] Duration Value
     capture_voltage = find_capture_voltage(duration_val_1,interp_pulse_duration,
                                            interp_voltage_amp)
     rheobase, chronaxie = find_rheobase_chronaxie(interp_pulse_duration,
@@ -142,3 +157,21 @@ def main_patient_1():
 
 if __name__ == "__main__":
     main_patient_1()
+
+duration = 0.8
+capture_voltage = 2.5
+data_length = 500      # length of data
+stim_duration = duration * np.ones((data_length))
+print(stim_duration)
+stim_voltage = np.arange(0, 5, 5/data_length)
+print(stim_voltage)
+capture_status = np.zeros((data_length))
+print(capture_status)
+print(len(capture_status))
+index = np.where(stim_voltage==capture_voltage)
+index = index[0][0]
+print(index)
+capture_status[index:] = 1
+print(capture_status)
+
+generate_capture_data("test_data", duration=0.8, capture_voltage=3)
