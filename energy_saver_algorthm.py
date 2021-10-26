@@ -6,7 +6,10 @@
 import numpy as np
 import matplotlib.pyplot as plt
 import scipy.optimize as so
+import scipy.interpolate as si
 import logging
+
+from scipy.sparse.extract import find
 
 
 # Sample Strength-duration data
@@ -15,7 +18,7 @@ import logging
 
 
 # Begin Modular Function Code
-def find_power_trend_line(x_data, y_data):
+"""def find_power_trend_line(x_data, y_data):
     popt, pcov = so.curve_fit(lambda fx,a,b: a*fx**-b,  x_data,  y_data, method="lm")
     x = np.arange(0, 2, 0.1)
     power_y = popt[0]*x**-popt[1]
@@ -24,27 +27,97 @@ def find_power_trend_line(x_data, y_data):
     plt.legend()
     plt.show()
     print("optimal equation is: y = {} * x^(-{})".format(popt[0],popt[1]))
-    return popt
+    return popt"""
+
+def interpolate_data_points(x_data, y_data):
+    """
+    Interpolates data
+
+    Args:
+        x_data (list or np.array): x values
+        y_data (list or np.array): y values to be interpolated
+
+    Returns:
+        x_new (np.array): new array of x values
+        y_new (np.array): interpolated array of y values
+    """
+    f = si.interp1d(x_data, y_data)
+    x_new = np.arange(x_data[0], x_data[-1], 0.01)
+    y_new = f(x_new)
+    plt.plot(x_data, y_data, 'o', label="Experimental Data")
+    plt.plot(x_new, y_new, '-', label="Interpolated Data")
+    plt.xlabel('Pulse Duration [ms]')
+    plt.ylabel('Voltage Amplitude [ms]')
+    plt.legend()
+    plt.show()
+    return x_new, y_new
 
 
-def find_capture_voltage(popt, duration_val):
-    capture_voltage = popt[0]*duration_val**-popt[1]
-    capture_voltage = round(capture_voltage,2)
-    print("The capture voltage at {} s is {} V".format(duration_val, capture_voltage))
+def find_nearest(a, a0):
+    """
+    Finds the element (and its index) in nd array `a` closest to the scalar value `a0`
+
+    Args:
+        a (np.array): array of values
+        a0 (int or float): value to find in np array 'a'
+
+    Returns:
+        idx (int): index of the element in nd array `a` closest to the scalar value `a0`
+        nearest_val (int or float): element in nd array `a` closest to the scalar value `a0`
+    """
+    idx = np.abs(a - a0).argmin()
+    idx = int(idx)
+    nearest_val = a[idx]
+    return idx, nearest_val
+
+
+def find_capture_voltage(duration_val: int or float, duration_data, voltage_amp_data):
+    """
+    Finds the minimum voltage it takes to capture mycardial tissue. In other words, this function
+    finds the voltage amplitude for a pulse duration
+
+    Args:
+        duration_val (int or float): pulse duration value
+        duration_data (list or array): interpolated pulse duration data
+        voltage_amp_data (list or array): interpolated voltage amplitude data
+
+    Returns:
+        capture_voltage (int or float): voltage amplitude to caputre the myocardial tissue
+    """
+    index, nearest_duration = find_nearest(duration_data, duration_val)
+    capture_voltage = voltage_amp_data[index]
+    capture_voltage = round(capture_voltage, 2)
+    print("The duration value you entered is: {} ms".format(duration_val))
+    print("The nearest duration value to the one you entered is: {} ms".format(round(nearest_duration,3)))
+    print("The capture voltage is {} V at a duration of {} ms".format(capture_voltage, round(nearest_duration,3)))
     return capture_voltage
 
 
-def find_rheobase_chronaxie(popt):
+def find_rheobase_chronaxie(duration_data, voltage_amp_data):
+    """
+    Calculates Rheobase and Chronaxie. The pulse duration and voltage amplitude data
+    should be interpolated data to get the most accurate results.
+
+    Args:
+        duration_data (list or array): interpolated pulse duration data
+        voltage_amp_data (list or array): interpolated voltage amplitude data
+
+    Returns:
+        rheobase (float): Rheobase =  the minimal electric current required to excite a tissue
+        chronaxie (float): chronaxie = minimum time required for an electric current double
+                           the strength of the rheobase to stimulate a tissue
+    """
     # Calculate Rheobase
-    inf_duration = 5
-    rheobase = popt[0]*inf_duration**-popt[1]
-    rheobase = round(rheobase, 2)
-    print("Rheobase = {}".format(rheobase))
+    rheobase = voltage_amp_data[-1]
+    rheobase = round(rheobase, 3)
+    print("Rheobase = {} V".format(rheobase))
     # Calculate Chronaxie
-    # (2 * Rheobase) = A * chronaxie^(B)
-    chronaxie = (2*rheobase / popt[0])**(1/popt[1])
-    chronaxie = round(chronaxie, 2)
-    print("Chronaxie = {}".format(chronaxie))
+    # (2 * Rheobase) = A * chronaxie^(B)q2
+    index, double_rheobase = find_nearest(voltage_amp_data, 2*rheobase)
+    print("Double Rheobase = {} V".format(double_rheobase))
+    chronaxie = duration_data[index]
+    chronaxie = round(chronaxie, 3)
+    print("Chronaxie = {} ms".format(chronaxie))
     return rheobase, chronaxie
 
 
@@ -56,11 +129,15 @@ def main_patient_1():
     """
     This function will drive the energy saving algorithm
     """
-    pulse_duration = [0.1, 0.2, 0.3, 0.4, 0.5, 1, 1.4]      # [s] Pulse duration of patient 1
-    voltage_amp = [4.75, 3.25, 2.7, 2.5, 2.3, 2.1, 2.1]     # [V] Voltage amplitude of patient 1
-    exponential_params = find_power_trend_line(pulse_duration, voltage_amp)
-    capture_voltage = find_capture_voltage(exponential_params,0.4)
-    rheobase, chronaxie = find_rheobase_chronaxie(exponential_params)
+    pulse_duration = [0.1, 0.2, 0.3, 0.4, 0.5, 1, 1.4]    # [ms] Pulse duration of patient 1
+    voltage_amp = [5, 3.5, 2.8, 2.6, 2.4, 2.2, 2.2]   # [V] Voltage amplitude of patient 1
+    interp_pulse_duration, interp_voltage_amp = interpolate_data_points(pulse_duration,
+                                                                        voltage_amp)
+    duration_val_1 = 0.8    # [ms] Duration Value 
+    capture_voltage = find_capture_voltage(duration_val_1,interp_pulse_duration,
+                                           interp_voltage_amp)
+    rheobase, chronaxie = find_rheobase_chronaxie(interp_pulse_duration,
+                                                  interp_voltage_amp)
 
 
 if __name__ == "__main__":
