@@ -29,13 +29,21 @@ def interpolate_data_points(x_data, y_data):
     f = si.interp1d(x_data, y_data)
     x_new = np.arange(x_data[0], x_data[-1], 0.01)
     y_new = f(x_new)
-    plt.plot(x_data, y_data, 'o', label="Experimental Data")
-    plt.plot(x_new, y_new, '-', label="Interpolated Data")
+    return x_new, y_new
+
+
+def plot_strength_duration_curve(pulse_duration_experimental,
+                                 voltage_amp_experimental,
+                                 pulse_duration_interp,
+                                 voltage_amp_interp):
+    plt.plot(pulse_duration_experimental, voltage_amp_experimental,
+             'o', label="Experimental Data")
+    plt.plot(pulse_duration_interp, voltage_amp_interp, '-',
+             label="Interpolated Data")
     plt.xlabel('Pulse Duration [ms]')
     plt.ylabel('Voltage Amplitude [ms]')
     plt.legend()
     plt.show()
-    return x_new, y_new
 
 
 def find_nearest(a, a0):
@@ -151,20 +159,25 @@ def main_patient_1():
     This function takes in experimental data and returns
     """
     # [ms] Pulse duration of patient 1
-    pulse_duration = [0.1, 0.2, 0.3, 0.4, 0.5, 1, 1.4]
+    pulse_duration_experimental = [0.1, 0.2, 0.3, 0.4, 0.5, 1, 1.4]
     # [V] Voltage amplitude of patient 1
-    voltage_amp = [5, 3.5, 2.8, 2.6, 2.4, 2.2, 2.2]
-    interp_pulse_duration, interp_voltage_amp = interpolate_data_points(
-                                                            pulse_duration,
-                                                            voltage_amp)
+    voltage_amp_experimental = [5, 3.5, 2.8, 2.6, 2.4, 2.2, 2.2]
+    pulse_duration_interp, voltage_amp_interp = interpolate_data_points(
+                                                pulse_duration_experimental,
+                                                voltage_amp_experimental)
+    plot_strength_duration_curve(pulse_duration_experimental,
+                                 voltage_amp_experimental,
+                                 pulse_duration_interp,
+                                 voltage_amp_interp)
     duration_val_1 = 0.8    # [ms] Duration Value
     capture_voltage = find_capture_voltage(duration_val_1,
-                                           interp_pulse_duration,
-                                           interp_voltage_amp)
-    rheobase, chronaxie = find_rheobase_chronaxie(interp_pulse_duration,
-                                                  interp_voltage_amp)
+                                           pulse_duration_interp,
+                                           voltage_amp_interp)
+    rheobase, chronaxie = find_rheobase_chronaxie(pulse_duration_interp,
+                                                  voltage_amp_interp)
 
 
+# Generate psuedo data for the energy saving algorithm
 def capture_data_patient1():
     generate_capture_data("test_data", duration=0.8, capture_voltage=3)
 
