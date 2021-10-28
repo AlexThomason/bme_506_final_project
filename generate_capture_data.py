@@ -63,13 +63,13 @@ def create_capture_data_file(pulse_duration_experimental,
     for duration_val, voltage_val in zip(pulse_duration_experimental,
                                          voltage_amp_experimental):
         generate_capture_data("{}_{}ms".format(patient_name, duration_val),
-                                               duration_val, voltage_val)
+                              duration_val, voltage_val)
 
 
 if __name__ == "__main__":
     # Sample Strength-duration data
     # https://d1wqtxts1xzle7.cloudfront.net/50956640/j.1540-8159.2009.02456.x2x0161218-19709-1lbuxg3-with-cover-page-v2.pdf?Expires=1635175866&Signature=N-ROBbokpqOa-5ioS8HXjMkeKh2I7sGkPqwLSjghrTBY7wRHJ75ELUi2FyERHH3acmAdyosEmHjI14bsrWXjqBZfxheNTCjoXw8qNEmJFiRXeWNbcy4kvfvMrdIDYqUcCFME-~beHZc51a4AazX4JsYplcBhMsVn9ljTvyy-tW4x21UFg31FaQzLI~yt2mevWPPXGYqpeoK62G7PesuSft~r-6g-HHU6DoBxXOH8rO01y0N5EZ2TT7yVx8xIrDASKRl4t~VQryRaK6kMWrgJ5EEmJTZDWHXnBI3aB7HS3PyHpnHZigCs8MiLGMJm7P0IMf5NV9XTUOXFbCBf7E1Zww__&Key-Pair-Id=APKAJLOHF5GGSLRBV4ZA
-    
+
     # patient 1
     duration_experimental = [0.1, 0.2, 0.3, 0.4, 0.5, 1, 1.4]
     voltage_experimental = [5, 3.5, 2.8, 2.6, 2.4, 2.2, 2.2]
