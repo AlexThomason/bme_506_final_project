@@ -12,9 +12,10 @@ from mpl_toolkits . mplot3d import Axes3D
 
 # Begin Modular Function Code
 
-def find_power_trend_line(pulse_duration_experimental, voltage_amp_experimental):
-    """ Finds the formula to describe the strength duration curve by optimizing
-        rheobase and chronaxie
+def find_power_trend_line(pulse_duration_experimental,
+                          voltage_amp_experimental):
+    """ Finds the formula to describe the strength duration curve by
+        optimizing rheobase and chronaxie
 
     Strength Duration curve formula: V = Vr * (1 + t_c/t)
         - V = threshold Voltage at pulse duration t
@@ -23,12 +24,12 @@ def find_power_trend_line(pulse_duration_experimental, voltage_amp_experimental)
         - t = stimulation pulse duration
         - Forumula Source:
         https://thoracickey.com/2-components-of-a-pacing-and-icd-system-basic-concepts-of-pacing/
-    
-    This function takes in experimental data of pulse duration and voltage amplitude
-    that has been measured from a patient using a pacemaker.
-    The scipy.optimize.curve_fit module optimizes rheobase and chronaxie
-    to the strength duration curve formula (described above) using
-    the experimental data.
+
+    This function takes in experimental data of pulse duration
+    and voltage amplitudethat has been measured from a patient
+    using a pacemaker.The scipy.optimize.curve_fit module optimizes
+    rheobase and chronaxie to the strength duration curve formula
+    (described above) using the experimental data.
 
     Args:
         pulse_duration_experimental (list): list of experimental pulse
@@ -41,14 +42,15 @@ def find_power_trend_line(pulse_duration_experimental, voltage_amp_experimental)
         chronaxie (float): optimized chronaxie value based on the
                            experimental data
     """
-    popt, pcov = so.curve_fit(lambda t, rheobase, chronaxie: 
+    popt, pcov = so.curve_fit(lambda t, rheobase, chronaxie:
                               rheobase * (1 + chronaxie/t),
                               pulse_duration_experimental,
                               voltage_amp_experimental,
                               method="lm")
     rheobase = round(popt[0], 2)
     chronaxie = round(popt[1], 2)
-    print("optimal equation is: V = {} * (1 + {}/t)".format(rheobase,chronaxie))
+    print("optimal equation is: V = {} * (1 + {}/t)".format(rheobase,
+                                                            chronaxie))
     print("Rheobase = {}".format(rheobase))
     print("Chronaxie = {}".format(chronaxie))
     return rheobase, chronaxie
@@ -59,8 +61,8 @@ def calculate_capture_voltage(rheobase, chronaxie, duration_val):
     Finds the minimum voltage it takes to capture mycardial tissue.
     In other words, this function finds the voltage amplitude for a
     pulse duration. If a float is entered for duration_val, a float
-    capture_voltage will be returned. If a list is entered for 
-    duration_val, a list capture_voltage will be returned. 
+    capture_voltage will be returned. If a list is entered for
+    duration_val, a list capture_voltage will be returned.
 
     Args:
         rheobase (float): rheobase value
@@ -85,7 +87,7 @@ def calculate_energy(pulse_duration,
                      pacing_resistance):
     """
     Finds the energy it for a given pulse duration and voltage
-    amplitude. pulse_duration and voltage_amp can be entered 
+    amplitude. pulse_duration and voltage_amp can be entered
     either as floats or as a list. If they are entered as
     floats, then energy will be returned as a float. If they
     are entered as lists, then energy will be returned as a
@@ -94,11 +96,12 @@ def calculate_energy(pulse_duration,
     Energy Equation:
         E = V^2 * t / R
         - V = threshold Voltage at pulse duration t
-        - R = total pacing impedence (generally ~1000 ohms is a good approximation) 
+        - R = total pacing impedence (generally ~1000 ohms is a good
+              approximation)
         - t = stimulation pulse duration
         - Forumula Source:
         https://thoracickey.com/2-components-of-a-pacing-and-icd-system-basic-concepts-of-pacing/
-    
+
     Args:
         pulse_duration (float or list): stimulus pulse duration
         voltage_amp (float or list): stimulus voltage amplitude
@@ -139,11 +142,12 @@ def plot_energy_curve(pulse_duration, voltage_amp, pacing_resistance):
     plt.show()
 
 
-
 def patient_data_manipulation(pulse_duration_experimental,
                               voltage_amp_experimental):
     """
-    This function takes in experimental data and returns the 
+    This function takes in experimental data and finds rheobase,
+    chronaxie, minimum pacing energy, plots strength duration curve,
+    and plots energy curve.
     """
     rheobase, chronaxie = find_power_trend_line(pulse_duration_experimental,
                                                 voltage_amp_experimental)
@@ -167,9 +171,9 @@ tissue is {} Joules".format(min_pulse_energy))
 if __name__ == "__main__":
     # Sample Strength-duration data
     # https://d1wqtxts1xzle7.cloudfront.net/50956640/j.1540-8159.2009.02456.x2x0161218-19709-1lbuxg3-with-cover-page-v2.pdf?Expires=1635175866&Signature=N-ROBbokpqOa-5ioS8HXjMkeKh2I7sGkPqwLSjghrTBY7wRHJ75ELUi2FyERHH3acmAdyosEmHjI14bsrWXjqBZfxheNTCjoXw8qNEmJFiRXeWNbcy4kvfvMrdIDYqUcCFME-~beHZc51a4AazX4JsYplcBhMsVn9ljTvyy-tW4x21UFg31FaQzLI~yt2mevWPPXGYqpeoK62G7PesuSft~r-6g-HHU6DoBxXOH8rO01y0N5EZ2TT7yVx8xIrDASKRl4t~VQryRaK6kMWrgJ5EEmJTZDWHXnBI3aB7HS3PyHpnHZigCs8MiLGMJm7P0IMf5NV9XTUOXFbCBf7E1Zww__&Key-Pair-Id=APKAJLOHF5GGSLRBV4ZA
-    
+
     # patient 1
-    
+
     # [ms] Pulse duration of patient 1
     duration_experimental = [0.1, 0.2, 0.3, 0.4, 0.5, 1, 1.4]
     # [V] Voltage amplitude of patient 1
