@@ -128,8 +128,8 @@ def import_parse_convert_data(filename):
         capture_list (list): list of floats of the capture status values
     """
     logging.basicConfig(filename="log_files/{}.log".format(
-                            filename.strip('.csv')), filemode="w",
-                            level=logging.INFO)
+                        filename.strip('.csv')), filemode="w",
+                        level=logging.INFO)
     patient_data_not_parsed = import_data(filename)
     patient_data_parsed = parse_data(patient_data_not_parsed)
     patient_data_float = data_str_to_float(patient_data_parsed)
@@ -142,7 +142,9 @@ def import_parse_convert_data(filename):
 def main():
     # Patient 1
     filename = "patient1_0.1ms.csv"
-    duration_list, voltage_list, capture_list = import_parse_convert_data(filename)
+    duration_list, voltage_list, capture_list = import_parse_convert_data(
+                                                filename)
+
 
 if __name__ == "__main__":
     main()

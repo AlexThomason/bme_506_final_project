@@ -180,4 +180,4 @@ if __name__ == "__main__":
     # [V] Voltage amplitude of patient 1
     voltage_experimental = [5, 3.5, 2.8, 2.6, 2.4, 2.2, 2.2]
     rheobase1, chronaxie1 = patient_data_manipulation(duration_experimental,
-                              voltage_experimental)
+                                                      voltage_experimental)
