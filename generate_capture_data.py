@@ -53,7 +53,7 @@ def generate_capture_data(filename: str, duration: int or float,
     index, _ = find_nearest(stim_voltage, capture_voltage)
     capture_status[index:] = 1
     data = np.column_stack([stim_duration, stim_voltage, capture_status])
-    np.savetxt(filename, data, fmt=['%.2f', '%.2f', '%d'], delimiter='\t')
+    np.savetxt(filename, data, fmt=['%.2f', '%.2f', '%d'], delimiter=',')
 
 
 # Generate psuedo data for the energy saving algorithm
@@ -62,8 +62,8 @@ def create_capture_data_file(pulse_duration_experimental,
                              patient_name):
     for duration_val, voltage_val in zip(pulse_duration_experimental,
                                          voltage_amp_experimental):
-        generate_capture_data("{}_{}ms".format(patient_name, duration_val),
-                              duration_val, voltage_val)
+        generate_capture_data("test_data/{}_{}ms.csv".format(patient_name,
+                              duration_val), duration_val, voltage_val)
 
 
 if __name__ == "__main__":

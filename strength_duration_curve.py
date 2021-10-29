@@ -105,8 +105,7 @@ def calculate_energy(pulse_duration,
     Args:
         pulse_duration (float or list): stimulus pulse duration
         voltage_amp (float or list): stimulus voltage amplitude
-        pacing_resistance (float or int): resistance of
-                                         myocardial tissue
+        pacing_resistance (float or int): total pacing impedence
 
     Returns:
         Energy (float or list): energy [joules] it for a given pulse
@@ -136,7 +135,7 @@ def plot_energy_curve(pulse_duration, voltage_amp, pacing_resistance):
     ax = Axes3D(fig)
     pulse_duration, voltage_amp = np.meshgrid(pulse_duration, voltage_amp)
     energy = calculate_energy(pulse_duration, voltage_amp, pacing_resistance)
-    ax.plot_surface(pulse_duration, voltage_amp, energy)
+    energy_surface = ax.plot_surface(pulse_duration, voltage_amp, energy)
     plt.xlabel('Pulse Duration [ms]')
     plt.ylabel('Voltage Amplitude [ms]')
     plt.show()
@@ -151,7 +150,8 @@ def patient_data_manipulation(pulse_duration_experimental,
     """
     rheobase, chronaxie = find_power_trend_line(pulse_duration_experimental,
                                                 voltage_amp_experimental)
-    min_pulse_energy = calculate_energy(rheobase, chronaxie, 1000)
+    pacing_resistance = 1000   # [ohms] total pacing impedence
+    min_pulse_energy = calculate_energy(rheobase, chronaxie, pacing_resistance)
     print("Minimum pacing energy to stimulate myocardial \
 tissue is {} Joules".format(min_pulse_energy))
     pulse_duration_optimized = np.arange(0.1, 2, 0.1)
@@ -159,12 +159,13 @@ tissue is {} Joules".format(min_pulse_energy))
                                                       chronaxie,
                                                       pulse_duration_optimized)
     pulse_energy = calculate_energy(pulse_duration_optimized,
-                                    voltage_amp_optimized, 1000)
+                                    voltage_amp_optimized, pacing_resistance)
     plot_strength_duration_curve(pulse_duration_experimental,
                                  voltage_amp_experimental,
                                  pulse_duration_optimized,
                                  voltage_amp_optimized)
-    plot_energy_curve(pulse_duration_optimized, voltage_amp_optimized, 1000)
+    plot_energy_curve(pulse_duration_optimized, voltage_amp_optimized,
+                      pacing_resistance)
     return rheobase, chronaxie
 
 
@@ -178,5 +179,5 @@ if __name__ == "__main__":
     duration_experimental = [0.1, 0.2, 0.3, 0.4, 0.5, 1, 1.4]
     # [V] Voltage amplitude of patient 1
     voltage_experimental = [5, 3.5, 2.8, 2.6, 2.4, 2.2, 2.2]
-    patient_data_manipulation(duration_experimental,
-                              voltage_experimental)
+    rheobase1, chronaxie1 = patient_data_manipulation(duration_experimental,
+                                                      voltage_experimental)
