@@ -1,4 +1,4 @@
-# generate_capture_data.py
+# import_capture_data.py
 # Author: Alex Thomason
 
 # Import necessary packages
