@@ -12,7 +12,7 @@ def find_nearest(a, a0):
     Finds the element (and its index) in nd array `a` closest to the scalar
     value `a0`
     Args:
-        a (np.array): array of values
+        a (np.array or list): array of values
         a0 (int or float): value to find in np array 'a'
     Returns:
         idx (int): index of the element in nd array `a` closest to the scalar
@@ -20,6 +20,7 @@ def find_nearest(a, a0):
         nearest_val (int or float): element in nd array `a` closest to the
                                     scalar value `a0`
     """
+    a = np.asarray(a)
     idx = np.abs(a - a0).argmin()
     idx = int(idx)
     nearest_val = a[idx]
