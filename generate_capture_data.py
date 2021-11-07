@@ -58,9 +58,31 @@ def generate_capture_data(filename: str, duration: int or float,
 
 
 # Generate psuedo data for the energy saving algorithm
-def create_capture_data_file(pulse_duration_experimental,
-                             voltage_amp_experimental,
-                             patient_name):
+def create_patient_capture_data_files(pulse_duration_experimental: list,
+                                      voltage_amp_experimental: list,
+                                      patient_name: str):
+    """This function creates capture data files and generates data
+    for a given patient.
+
+    This function takes in a list of experimental pulse duration
+    and voltage amplitudes for a given patient and creates
+    psuedo experimental data for the energy saving algorithm.
+
+    Args:
+        pulse_duration_experimental (list): list of floats containing
+                    experimental pulse durations. List must be the same
+                    length as voltage_amp_experimental
+        voltage_amp_experimental (list): list of floats containing
+                    experimental voltage amplitudes that capture
+                    the myocardial tisuee of the patient. List must
+                    be the same length as pulse_duration_experimental
+        patient_name: name of the patient that the data belongs to
+
+    Returns:
+        Several files (same number of files as there are objects in
+        the input lists) containing data as described in the
+        generate_capture_data() function
+    """
     for duration_val, voltage_val in zip(pulse_duration_experimental,
                                          voltage_amp_experimental):
         generate_capture_data("test_data/{}_{}ms.csv".format(patient_name,
@@ -74,5 +96,6 @@ if __name__ == "__main__":
     # patient 1
     duration_experimental = [0.1, 0.2, 0.3, 0.4, 0.5, 1, 1.4]
     voltage_experimental = [5, 3.5, 2.8, 2.6, 2.4, 2.2, 2.2]
-    create_capture_data_file(duration_experimental,
+    create_patient_capture_data_files(duration_experimental,
                              voltage_experimental, "patient1")
+    
