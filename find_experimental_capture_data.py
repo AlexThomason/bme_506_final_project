@@ -4,9 +4,11 @@
 
 # Import necessary packages
 import numpy as np
+import matplotlib.pyplot as plt
 import logging
 import import_capture_data as icd
 import generate_capture_data as gcd
+import strength_duration_curve as sdc
 
 
 """def deliver_backup_pulse(failed_duration, failed_voltage):
@@ -62,6 +64,7 @@ def find_capture_voltage(duration_list: list, voltage_list: list,
                              (1 = capture, 0 = no capture)
 
     Returns:
+        capture_duration (float): duration of the capture voltage
         capture_voltage (float): capture voltage of the myocardial tissue
                 within a 5% error above the true cpature voltage
     """
@@ -124,7 +127,9 @@ is: {}".format(capture_voltage))
     logging.info("The capture voltage within 5 percent error \
 is: {}".format(capture_voltage))
 
-    return capture_voltage
+    capture_duration = duration_list[0]
+
+    return capture_duration, capture_voltage
 
 
 def find_patient_capture_voltage(filename: str):
@@ -139,6 +144,7 @@ def find_patient_capture_voltage(filename: str):
         (3) Capture Status (1 = capture, 0 = no capture)
 
     Returns:
+        capture_duration (float): duration of the capture voltage
         capture_voltage (float): capture voltage of the myocardial tissue
                 for a pulse duration (duration value is specified in the
                 first column of the patient data file)
@@ -148,11 +154,35 @@ def find_patient_capture_voltage(filename: str):
     logging.basicConfig(filename="log_files/{}.log".format(
                         filename[:-4]), filemode="r",
                         level=logging.INFO)
-    capture_voltage = find_capture_voltage(duration_list, voltage_list,
+    capture_duration, capture_voltage = find_capture_voltage(duration_list, voltage_list,
                                            capture_list)
-    return capture_voltage
+    return capture_duration, capture_voltage
+
+
+def patient_strength_duration_data(patient_data_filename_list: list):
+    """
+
+    """
+    capture_duration_data = []
+    capture_voltage_data = []
+
+    for filename in patient_data_filename_list:
+        capture_duration, capture_voltage = find_patient_capture_voltage(filename)
+        capture_duration_data.append(capture_duration)
+        capture_voltage_data.append(capture_voltage)
+
+    return capture_duration_data, capture_voltage_data
 
 
 if __name__ == "__main__":
-    filename = "patient1_0.3ms.csv"
-    find_patient_capture_voltage(filename)
+    # Patient 1
+    p1_data_filename_list = ["patient1_0.1ms.csv",
+                             "patient1_0.2ms.csv",
+                             "patient1_0.3ms.csv",
+                             "patient1_0.4ms.csv",
+                             "patient1_0.5ms.csv",
+                             "patient1_1ms.csv",
+                             "patient1_1.4ms.csv"]
+    p1_capture_duration_data, p1_capture_voltage_data = patient_strength_duration_data(p1_data_filename_list)
+    sdc.patient_data_manipulation(p1_capture_duration_data, p1_capture_voltage_data)
+    plt.show
