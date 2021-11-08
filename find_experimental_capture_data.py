@@ -156,7 +156,7 @@ def find_patient_capture_voltage(filename: str):
                         level=logging.INFO)
     capture_duration, capture_voltage = \
         find_capture_voltage(duration_list, voltage_list,
-                                     capture_list)
+                             capture_list)
     return capture_duration, capture_voltage
 
 
