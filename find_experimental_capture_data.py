@@ -154,8 +154,9 @@ def find_patient_capture_voltage(filename: str):
     logging.basicConfig(filename="log_files/{}.log".format(
                         filename[:-4]), filemode="r",
                         level=logging.INFO)
-    capture_duration, capture_voltage = find_capture_voltage(duration_list, voltage_list,
-                                           capture_list)
+    capture_duration, capture_voltage = \
+        find_capture_voltage(duration_list, voltage_list,
+                                     capture_list)
     return capture_duration, capture_voltage
 
 
@@ -167,7 +168,8 @@ def patient_strength_duration_data(patient_data_filename_list: list):
     capture_voltage_data = []
 
     for filename in patient_data_filename_list:
-        capture_duration, capture_voltage = find_patient_capture_voltage(filename)
+        capture_duration, capture_voltage = \
+                    find_patient_capture_voltage(filename)
         capture_duration_data.append(capture_duration)
         capture_voltage_data.append(capture_voltage)
 
@@ -183,6 +185,8 @@ if __name__ == "__main__":
                              "patient1_0.5ms.csv",
                              "patient1_1ms.csv",
                              "patient1_1.4ms.csv"]
-    p1_capture_duration_data, p1_capture_voltage_data = patient_strength_duration_data(p1_data_filename_list)
-    sdc.patient_data_manipulation(p1_capture_duration_data, p1_capture_voltage_data)
+    p1_capture_duration_data, p1_capture_voltage_data = \
+        patient_strength_duration_data(p1_data_filename_list)
+    sdc.patient_data_manipulation(p1_capture_duration_data,
+                                  p1_capture_voltage_data)
     plt.show
