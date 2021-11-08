@@ -23,7 +23,8 @@ def detect_capture(voltage_list, capture_list, trial_voltage):
         return True"""
 
 
-def find_capture_voltage(duration_list: list, voltage_list: list, capture_list: list):
+def find_capture_voltage(duration_list: list, voltage_list: list,
+                         capture_list: list):
     """Finds the capture voltage of a patient at a certain stimulus duration.
 
     This function contains the algorithm to find the capture voltage
@@ -126,7 +127,7 @@ is: {}".format(capture_voltage))
     return capture_voltage
 
 
-def find_patient_capture_voltage(filename:str):
+def find_patient_capture_voltage(filename: str):
     """Finds the capture voltage of a patient data file
 
     Args:
@@ -136,7 +137,7 @@ def find_patient_capture_voltage(filename:str):
         (1) stimulus duration - constant pulse duration
         (2) Stimulus Voltage Amplitude - varying voltage of the stimulus
         (3) Capture Status (1 = capture, 0 = no capture)
-    
+
     Returns:
         capture_voltage (float): capture voltage of the myocardial tissue
                 for a pulse duration (duration value is specified in the
