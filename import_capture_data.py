@@ -27,6 +27,7 @@ def import_data(filename):
     except FileNotFoundError:
         print("The filename you entered does not exist in \
 the 'test_data' directory. Please choose another file.")
+        quit()
 
 
 def parse_data(in_line):
@@ -128,7 +129,7 @@ def import_parse_convert_data(filename):
         capture_list (list): list of floats of the capture status values
     """
     logging.basicConfig(filename="log_files/{}.log".format(
-                        filename.strip('.csv')), filemode="w",
+                        filename[:-4]), filemode="w",
                         level=logging.INFO)
     patient_data_not_parsed = import_data(filename)
     patient_data_parsed = parse_data(patient_data_not_parsed)
@@ -144,7 +145,8 @@ def main():
     filename = "patient1_0.1ms.csv"
     duration_list, voltage_list, capture_list = import_parse_convert_data(
                                                 filename)
+    return duration_list, voltage_list, capture_list
 
 
 if __name__ == "__main__":
-    main()
+    duration_list, voltage_list, capture_list = main()
