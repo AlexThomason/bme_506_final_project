@@ -128,9 +128,9 @@ def import_parse_convert_data(filename):
         voltage_list (list): list of floats of the voltage values
         capture_list (list): list of floats of the capture status values
     """
-    logging.basicConfig(filename="log_files/{}.log".format(
-                        filename[:-4]), filemode="w",
-                        level=logging.INFO)
+#    logging.basicConfig(filename="log_files/{}.log".format(
+#                        filename[:-4]), filemode="w",
+#                        level=logging.INFO)
     patient_data_not_parsed = import_data(filename)
     patient_data_parsed = parse_data(patient_data_not_parsed)
     patient_data_float = data_str_to_float(patient_data_parsed)
@@ -149,4 +149,6 @@ def main():
 
 
 if __name__ == "__main__":
+    logging.basicConfig(filename="log_files/patient1.log", filemode="w",
+                        level=logging.INFO)
     duration_list, voltage_list, capture_list = main()
