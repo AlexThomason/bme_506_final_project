@@ -97,5 +97,4 @@ if __name__ == "__main__":
     duration_experimental = [0.1, 0.2, 0.3, 0.4, 0.5, 1, 1.4]
     voltage_experimental = [5, 3.5, 2.8, 2.6, 2.4, 2.2, 2.2]
     create_patient_capture_data_files(duration_experimental,
-                             voltage_experimental, "patient1")
-    
+                                      voltage_experimental, "patient1")
