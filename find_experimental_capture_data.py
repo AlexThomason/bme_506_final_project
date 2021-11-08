@@ -182,7 +182,23 @@ def patient_strength_duration_data(patient_name: str,
         capture_duration_data.append(capture_duration)
         capture_voltage_data.append(capture_voltage)
 
-    return capture_duration_data, capture_voltage_data
+    print("The capture duration data (in ms) {} is: {}".format(
+        patient_name, capture_duration_data))
+    logging.info("The capture duration data (in ms) {} is: {}".format(
+        patient_name, capture_duration_data))
+    print("The capture voltage data (in Volts) for {} is: {}".format(
+        patient_name, capture_duration_data))
+    logging.info("The capture voltage data (in Volts) for {} is: {}\n".format(
+        patient_name, capture_duration_data))
+
+    rheobase, chronaxie = sdc.patient_data_manipulation(
+        capture_duration_data,
+        capture_voltage_data)
+
+    logging.info("{} Rheobase = {} ms".format(patient_name, rheobase))
+    logging.info("{} Chronaxie = {} ms".format(patient_name, chronaxie))
+
+    return rheobase, chronaxie
 
 
 if __name__ == "__main__":
@@ -194,8 +210,5 @@ if __name__ == "__main__":
                              "patient1_0.5ms.csv",
                              "patient1_1ms.csv",
                              "patient1_1.4ms.csv"]
-    p1_capture_duration_data, p1_capture_voltage_data = \
-        patient_strength_duration_data("patient1", p1_data_filename_list)
-    sdc.patient_data_manipulation(p1_capture_duration_data,
-                                  p1_capture_voltage_data)
-    plt.show
+    p1_rheobase, p1_chronaxie = patient_strength_duration_data(
+        "patient1", p1_data_filename_list)
