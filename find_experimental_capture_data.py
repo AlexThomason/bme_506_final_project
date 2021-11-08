@@ -155,4 +155,4 @@ def find_patient_capture_voltage(filename: str):
 
 if __name__ == "__main__":
     filename = "patient1_0.3ms.csv"
-    algorithm_driver(filename)
+    find_patient_capture_voltage(filename)
