@@ -194,24 +194,23 @@ def patient_strength_duration_data(patient_name: str,
     rheobase, chronaxie, min_pulse_energy = sdc.patient_data_manipulation(
         capture_duration_data,
         capture_voltage_data)
-    
+
     voltage_at_chronaxie = 2*rheobase
     reccomended_pulse_duration = 3 * chronaxie
-    energy_at_pulse_reccomendation = sdc.calculate_energy(reccomended_pulse_duration,
-                                                          voltage_at_chronaxie,
-                                                          1000)
+    energy_at_pulse_reccomendation = sdc.calculate_energy(
+        reccomended_pulse_duration, voltage_at_chronaxie, 1000)
 
     logging.info("RHEOBASE / CHRONAXIE / MIN ENERGY- {}".format(patient_name))
     logging.info("{} Rheobase = {} V".format(patient_name, rheobase))
     logging.info("{} Chronaxie = {} ms".format(patient_name, chronaxie))
     logging.info("Voltage at Chronaxie = {} V".format(voltage_at_chronaxie))
     logging.info("{} Minimum Pulse Energy = {} J\n".format(patient_name,
-                                                         min_pulse_energy))
+                                                           min_pulse_energy))
     logging.info("RECCOMENDED SETTINGS - {}".format(patient_name))
-    logging.info("Recomended stimulus duration for {} = {} ms".format(patient_name,
-        reccomended_pulse_duration))
-    logging.info("Recomended Voltage for {} = {} V".format(patient_name,
-        voltage_at_chronaxie))
+    logging.info("Recomended stimulus duration for {} = {} ms".format(
+        patient_name, reccomended_pulse_duration))
+    logging.info("Recomended Voltage for {} = {} V".format(
+        patient_name, voltage_at_chronaxie))
     logging.info("Energy at reccomended pulse duration and voltage \
 for {} = {} J".format(patient_name, energy_at_pulse_reccomendation))
 
