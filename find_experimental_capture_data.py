@@ -68,6 +68,11 @@ def find_capture_voltage(duration_list: list, voltage_list: list,
         capture_voltage (float): capture voltage of the myocardial tissue
                 within a 5% error above the true cpature voltage
     """
+    # Experimental duration (kept constant while stimulus voltage is
+    # changed)
+    duration_experimental = duration_list[0]
+    logging.info("Finding Capture Voltage for a stimulus duration \
+of {} ms".format(duration_experimental))
     # [V] Start voltage
     voltage_start = 3
     # [V] Experimental voltage and itterated in while loop
@@ -87,7 +92,8 @@ def find_capture_voltage(duration_list: list, voltage_list: list,
 
         if capture_status == 1:
             logging.info("Captured: Myocardial tissue was captured with \
-stimulus of {} V for {} ms".format(voltage_experimental, duration_list[0]))
+stimulus of {} V for {} ms".format(voltage_experimental,
+                                   duration_experimental))
             capture_voltage_experimental_list.append(voltage_experimental)
 
             if small_step_indicator == 0:
@@ -97,23 +103,24 @@ stimulus of {} V for {} ms".format(voltage_experimental, duration_list[0]))
                 voltage_experimental *= 0.95
 
         if capture_status == 0:
-            logging.info("Failed to Capture: Myocardial tissue was not \
+            logging.warn("Failed to Capture: Myocardial tissue was not \
 captured with stimulus of {} V for {} ms. A backup pulse of 4.5 V was \
-applied to the patient".format(voltage_experimental, duration_list[0]))
+applied to the patient".format(voltage_experimental, duration_experimental))
 
             # Increases the voltage to 5 Volts if the beginning voltage is
             # insufficient for myocardial stimulation
             if len(capture_voltage_experimental_list) == 0:
-                logging.info("Start voltage of {} V did not stimulate \
+                logging.warn("Start voltage of {} V did not stimulate \
 the myocardial tissue at at stimulation duration of {} ms. The next \
 stimulus voltage is set to be 5 V.".format(voltage_experimental,
-                                           duration_list[0]))
+                                           duration_experimental))
                 voltage_experimental = 5
                 continue
 
             else:
                 no_capture_counter += 1
-                voltage_experimental = capture_voltage_experimental_list[-1]
+                voltage_experimental = \
+                    capture_voltage_experimental_list[-1] * 0.95
                 small_step_indicator = 1
 
     print("Capture Voltage Experimental List: \
@@ -125,11 +132,9 @@ stimulus voltage is set to be 5 V.".format(voltage_experimental,
     print("The capture voltage within 5 percent error \
 is: {}".format(capture_voltage))
     logging.info("The capture voltage within 5 percent error \
-is: {}".format(capture_voltage))
+is: {}\n".format(capture_voltage))
 
-    capture_duration = duration_list[0]
-
-    return capture_duration, capture_voltage
+    return duration_experimental, capture_voltage
 
 
 def find_patient_capture_voltage(filename: str):
@@ -151,19 +156,23 @@ def find_patient_capture_voltage(filename: str):
     """
     duration_list, voltage_list, capture_list = icd.import_parse_convert_data(
                                                 filename)
-    logging.basicConfig(filename="log_files/{}.log".format(
-                        filename[:-4]), filemode="r",
-                        level=logging.INFO)
+#    logging.basicConfig(filename="log_files/{}.log".format(
+#                        filename[:-4]), filemode="r",
+#                        level=logging.INFO)
     capture_duration, capture_voltage = \
         find_capture_voltage(duration_list, voltage_list,
                              capture_list)
     return capture_duration, capture_voltage
 
 
-def patient_strength_duration_data(patient_data_filename_list: list):
+def patient_strength_duration_data(patient_name: str,
+                                   patient_data_filename_list: list):
     """
 
     """
+    logging.basicConfig(filename="log_files/{}.log".format(
+                        patient_name), filemode="w",
+                        level=logging.INFO)
     capture_duration_data = []
     capture_voltage_data = []
 
@@ -173,7 +182,39 @@ def patient_strength_duration_data(patient_data_filename_list: list):
         capture_duration_data.append(capture_duration)
         capture_voltage_data.append(capture_voltage)
 
-    return capture_duration_data, capture_voltage_data
+    print("The capture duration data (in ms) {} is: {}".format(
+        patient_name, capture_duration_data))
+    logging.info("The capture duration data (in ms) {} is: {}".format(
+        patient_name, capture_duration_data))
+    print("The capture voltage data (in Volts) for {} is: {}".format(
+        patient_name, capture_duration_data))
+    logging.info("The capture voltage data (in Volts) for {} is: {}\n".format(
+        patient_name, capture_duration_data))
+
+    rheobase, chronaxie, min_pulse_energy = sdc.patient_data_manipulation(
+        capture_duration_data,
+        capture_voltage_data)
+
+    voltage_at_chronaxie = 2*rheobase
+    reccomended_pulse_duration = 3 * chronaxie
+    energy_at_pulse_reccomendation = sdc.calculate_energy(
+        reccomended_pulse_duration, voltage_at_chronaxie, 1000)
+
+    logging.info("RHEOBASE / CHRONAXIE / MIN ENERGY- {}".format(patient_name))
+    logging.info("{} Rheobase = {} V".format(patient_name, rheobase))
+    logging.info("{} Chronaxie = {} ms".format(patient_name, chronaxie))
+    logging.info("Voltage at Chronaxie = {} V".format(voltage_at_chronaxie))
+    logging.info("{} Minimum Pulse Energy = {} J\n".format(patient_name,
+                                                           min_pulse_energy))
+    logging.info("RECCOMENDED SETTINGS - {}".format(patient_name))
+    logging.info("Recomended stimulus duration for {} = {} ms".format(
+        patient_name, reccomended_pulse_duration))
+    logging.info("Recomended Voltage for {} = {} V".format(
+        patient_name, voltage_at_chronaxie))
+    logging.info("Energy at reccomended pulse duration and voltage \
+for {} = {} J".format(patient_name, energy_at_pulse_reccomendation))
+
+    return rheobase, chronaxie
 
 
 if __name__ == "__main__":
@@ -185,8 +226,5 @@ if __name__ == "__main__":
                              "patient1_0.5ms.csv",
                              "patient1_1ms.csv",
                              "patient1_1.4ms.csv"]
-    p1_capture_duration_data, p1_capture_voltage_data = \
-        patient_strength_duration_data(p1_data_filename_list)
-    sdc.patient_data_manipulation(p1_capture_duration_data,
-                                  p1_capture_voltage_data)
-    plt.show
+    p1_rheobase, p1_chronaxie = patient_strength_duration_data(
+        "patient1", p1_data_filename_list)
