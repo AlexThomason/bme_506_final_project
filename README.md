@@ -47,22 +47,22 @@ Because the voltage term is squared, if the voltage doubles, then energy quadrup
 
 The pacing threshold exhibits significant inter-individual variations. After implantation, the pacemaker must be programmed with various parameters to fit each patient. Even in an individual, the pacing threshold may vary over time because of spontaneous threshold rise after implantation, micro-dislodgment of the pacemaker lead, diurnal changes, and changes secondary to drugs or myocardial ischemia [4]. These varying pacing thresholds may raise safety risks due to narrowing pacing stimulation safety margins. Conversely, unnecessarily high pacing output shortens battery life. The ability to automatically track threshold and to adjust the pacing outputs accordingly will maximize patient safety and minimize battery drain for pacing [4]. Additionally, optimizing threshold detection algorithms could help reduce battery size and the time it takes for pacemaker programming. Several manufacturers have developed algorithms for gathering threshold data, which is used either on a beat-by-beat basis to ensure a passed response or intermittently to adjust output parameters. A summary of existing capture management algorithms is summarized below [5]:
 
-	* St. Jude/Pacemaker Autocapture
-	    * Type: determines evoked response (capture) beat-by-beat
-	    * Backup pulse: 4.5 V delivered immediately if no capture is detected
-	    * Threshold search starts when: two consecutive backup pulses detected
-	    * Increase voltage: 0.125 V steps until two consecutive captures are detected
-	    * Safety margin: 0.3 V added
-	* Boston Scientific Automatic Capture
-	    * Type: Beat-to-beat verification of myocardial capture based on ventricular evoked response
-	    * Backup pulse: Backup pulse of (measured threshold + 1.5 V) delivered 100 ms after initial stimulus if no capture is detected
-	    * Threshold search starts when: No capture for 2/4 beats 
-	    * Safety Margin: 0.5 V above measured threshold (ventricular voltage)
-	* Medtronic Ventricular Capture Management
-	    * Type: Intermittent – activated every 15 mins for 42 days
-	    * Measure Rheobase: determined at 1 ms by amplitude decrement until loss of capture and then by amplitude increment until capture is confirmed.
-	    * Measure Chronaxie: determined by doubling the programmed amplitude and decreasing the pulse width (and sequentially increasing the amplitude to capture)
-	    * Recommended setting based off rheobase and chronaxie
+* St. Jude/Pacemaker Autocapture
+    * Type: determines evoked response (capture) beat-by-beat
+    * Backup pulse: 4.5 V delivered immediately if no capture is detected
+    * Threshold search starts when: two consecutive backup pulses detected
+    * Increase voltage: 0.125 V steps until two consecutive captures are detected
+    * Safety margin: 0.3 V added
+* Boston Scientific Automatic Capture
+    * Type: Beat-to-beat verification of myocardial capture based on ventricular evoked response
+    * Backup pulse: Backup pulse of (measured threshold + 1.5 V) delivered 100 ms after initial stimulus if no capture is detected
+    * Threshold search starts when: No capture for 2/4 beats 
+    * Safety Margin: 0.5 V above measured threshold (ventricular voltage)
+* Medtronic Ventricular Capture Management
+    * Type: Intermittent – activated every 15 mins for 42 days
+    * Measure Rheobase: determined at 1 ms by amplitude decrement until loss of capture and then by amplitude increment until capture is confirmed.
+    * Measure Chronaxie: determined by doubling the programmed amplitude and decreasing the pulse width (and sequentially increasing the amplitude to capture)
+    * Recommended setting based off rheobase and chronaxie
 
 These three methods find capture by increasing voltage, but every time the voltage is under the threshold, the pacemaker generates a backup pulse of higher voltage. It’s a waste of energy to continuously initiate those backup pulses, especially if the threshold detection is on a beat-by-beat basis. St. Jude and Boston Scientific algorithms do not find the optimal stimulus duration, only the threshold for the stimulus amplitude. Optimizing both stimulus duration and amplitude will save energy. My goal is to develop an algorithm that improves/combines these three approaches by efficiently finding the chronaxie (the point of minimum pulsing energy) and dynamically adjusting pulse amplitude and duration.
 
