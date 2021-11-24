@@ -3,8 +3,6 @@
 
 
 # Import necessary packages
-import numpy as np
-import matplotlib.pyplot as plt
 import logging
 import import_capture_data as icd
 import generate_capture_data as gcd
@@ -47,11 +45,11 @@ def find_capture_voltage(duration_list: list, voltage_list: list,
         - While loop initiated --> continues to run as long as
                 the no_capture_counter is less than 2
         - If the starting voltage is not strong enough to stimulate the
-                myocardium, then the experimental voltage is set to 5 V
-        - If the experimental voltage (or starting voltage) is not
-                enough to stimulate the myocardium, then a backup
-                voltage of 5V is given to the patient to ensure
-                that pacing occurs.
+                myocardium, then the experimental voltage is set to 1 V
+                higher than the previous experimental voltage
+        - If the experimental voltage is not enough to stimulate the
+                myocardium, then a backup voltage of 4.5 V is given to
+                the patient to ensure that pacing occurs.
         - Finds returns the capture voltage of the myocardial tissue
                 within a 5% error above the true cpature voltage
 
@@ -113,8 +111,9 @@ applied to the patient".format(voltage_experimental, duration_experimental))
                 logging.warn("Start voltage of {} V did not stimulate \
 the myocardial tissue at at stimulation duration of {} ms. The next \
 stimulus voltage is set to be 5 V.".format(voltage_experimental,
-                                           duration_experimental))
-                voltage_experimental = 5
+                                           duration_experimental,
+                                           voltage_experimental + 1))
+                voltage_experimental += 1
                 continue
 
             else:
@@ -189,7 +188,7 @@ def patient_strength_duration_data(patient_name: str,
     print("The capture voltage data (in Volts) for {} is: {}".format(
         patient_name, capture_duration_data))
     logging.info("The capture voltage data (in Volts) for {} is: {}\n".format(
-        patient_name, capture_duration_data))
+        patient_name, capture_voltage_data))
 
     rheobase, chronaxie, min_pulse_energy = sdc.patient_data_manipulation(
         capture_duration_data,
@@ -218,7 +217,8 @@ for {} = {} J".format(patient_name, energy_at_pulse_reccomendation))
 
 
 if __name__ == "__main__":
-    # Patient 1
+    # ____PATIENT 1____
+
     p1_data_filename_list = ["patient1_0.1ms.csv",
                              "patient1_0.2ms.csv",
                              "patient1_0.3ms.csv",
@@ -228,3 +228,43 @@ if __name__ == "__main__":
                              "patient1_1.4ms.csv"]
     p1_rheobase, p1_chronaxie = patient_strength_duration_data(
         "patient1", p1_data_filename_list)
+
+    """
+    p1_data_filename_list = ["patient1_0.2ms.csv",
+                             "patient1_0.3ms.csv",
+                             "patient1_0.5ms.csv",
+                             "patient1_1ms.csv",
+                             "patient1_1.4ms.csv"]
+    p1_rheobase, p1_chronaxie = patient_strength_duration_data(
+        "patient1", p1_data_filename_list)
+
+    p1_data_filename_list = ["patient1_0.2ms.csv",
+                             "patient1_0.5ms.csv",
+                             "patient1_1ms.csv",
+                             "patient1_1.4ms.csv"]
+    p1_rheobase, p1_chronaxie = patient_strength_duration_data(
+        "patient1", p1_data_filename_list)
+
+
+    p1_data_filename_list = ["patient1_0.2ms.csv",
+                             "patient1_0.5ms.csv",
+                             "patient1_1ms.csv"]
+    p1_rheobase, p1_chronaxie = patient_strength_duration_data(
+        "patient1", p1_data_filename_list)
+
+    p1_data_filename_list = ["patient1_0.2ms.csv",
+                             "patient1_1ms.csv"]
+    p1_rheobase, p1_chronaxie = patient_strength_duration_data(
+        "patient1", p1_data_filename_list)
+    """
+
+    # ____PATIENT 2____
+    """
+    p1_data_filename_list = ["patient2_0.3ms.csv",
+                             "patient2_0.5ms.csv",
+                             "patient2_0.8ms.csv",
+                             "patient2_1ms.csv",
+                             "patient2_1.5ms.csv"]
+    p2_rheobase, p2_chronaxie = patient_strength_duration_data(
+        "patient2", p1_data_filename_list)
+    """
