@@ -2,7 +2,6 @@
 # Author: Alex Thomason
 
 # Import necessary packages
-import numpy as np
 import logging
 
 
