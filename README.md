@@ -17,8 +17,14 @@ Author: Alex Thomason
 * Most energy Efficient Pacing – Occurs at chronaxie
 * Strength Duration Curve – Curve that relates pacing threshold to pulse duration. The plot of a strength duration curve is pulse amplitude (either voltage [V] or current) vs pulse duration [ms]. In this paper, the strength-duration curve will be Pulse Amplitude [V] vs Pulse Duration [ms].
 
-![Screenshot](figures/pulse_shape.png)      ![Screenshot](figures/strength_duration_curve1.png)      ![Screenshot](figures/strength_duration_curve2.png)
-*Figure 1: Shape of a stimulating pulse*    *Figure 2: Strength Duration Curve*                      *Figure 3. Rheobase and Chronaxie on Strength-Duration Curve*
+![Screenshot](figures/pulse_shape.png)
+*Figure 1: Shape of a stimulating pulse*
+
+![Screenshot](figures/strength_duration_curve1.png)
+*Figure 2: Strength Duration Curve*
+
+![Screenshot](figures/strength_duration_curve2.png)
+*Figure 3. Rheobase and Chronaxie on Strength-Duration Curve*
 
 # Introduction
 
