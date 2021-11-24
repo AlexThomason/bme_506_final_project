@@ -1,7 +1,23 @@
 # bme_506_final_project
 Pacemaker Energy Saving Algorithm
+Author: Alex Thomason
 
+# Definitions
+* Cardiac pacemaker – A medical device that generates electrical impulses delivered by electrodes to cause the heart muscle chambers to contract and therefore pump blood; by doing so this device replaces and/or regulates the function of the electrical conduction system of the heart.
+* Capture – Depolarization of the atria and/or ventricles by an electrical stimulus delivered by an artificial pacemaker
+* Threshold – The minimum amount of electrical energy needed to consistently capture the heart outside of the heart’s refractory period
+* Pulse Duration – Length of time [ms] that the pacing pulse occurs
+* Pulse Strength - Amplitude of Volts [V] or Amps [mA] of a pacing pulse. In this paper, pulse strength will be referred to in Volts [V].
+* Output – stated as ___V @ ___ms
+* Safety Margin – Programming the pacemaker at a high enough output (amplitude and duration) above the threshold to make sure that we capture the heart consistently. Having a high enough safety margin is important to consistently capture the heart if the patient’s threshold fluctuates.
+    * Industry standard = either 2x threshold voltage or 3x pulse width
+* Rheobase - The lowest stimulus current that continues to capture the heart when the stimulus duration is made very long.
+* Chronaxie - The pulse duration at twice the rheobase
+* Pacing Energy – Energy consumption of a pacing pulse
+* Most energy Efficient Pacing – Occurs at chronaxie
+* Strength Duration Curve – Curve that relates pacing threshold to pulse duration. The plot of a strength duration curve is pulse amplitude (either voltage [V] or current) vs pulse duration [ms]. In this paper, the strength-duration curve will be Pulse Amplitude [V] vs Pulse Duration [ms].
 
+![Screenshot](figures/pulse_shape.png)
 
 # Introduction
 
