@@ -6,14 +6,34 @@
 import numpy as np
 import matplotlib.pyplot as plt
 import scipy.optimize as so
-import logging
 from mpl_toolkits . mplot3d import Axes3D
 
 
 # Begin Modular Function Code
 
-def find_power_trend_line(pulse_duration_experimental,
-                          voltage_amp_experimental):
+def percent_difference(a: list, b: list):
+    """Returns the percent change between each value between
+    two lists. The lists must be the same length.
+
+    Args:
+        a (list): list of floats
+        b (list): list of floats
+
+    Returns:
+        percent_diff_list (list): list of floats that contain
+                the percent change between each value of the
+                two input lists
+    """
+    percent_diff_list = []
+    for i in range(len(a)):
+        percent_diff = float(abs((a[i] - b[i]) * 100 / a[i]))
+        percent_diff = round(percent_diff, 2)
+        percent_diff_list.append(percent_diff)
+    return percent_diff_list
+
+
+def strength_duration_trend_line(pulse_duration_experimental,
+                                 voltage_amp_experimental):
     """ Finds the formula to describe the strength duration curve by
         optimizing rheobase and chronaxie
 
@@ -47,8 +67,9 @@ def find_power_trend_line(pulse_duration_experimental,
                               pulse_duration_experimental,
                               voltage_amp_experimental,
                               method="lm")
-    rheobase = round(popt[0], 2)
-    chronaxie = round(popt[1], 2)
+    rheobase = round(popt[0], 3)
+    chronaxie = round(popt[1], 3)
+
     print("optimal equation is: V = {} * (1 + {}/t)".format(rheobase,
                                                             chronaxie))
     print("Rheobase = {} V".format(rheobase))
@@ -124,7 +145,8 @@ def plot_strength_duration_curve(pulse_duration_experimental,
     plt.plot(pulse_duration_interp, voltage_amp_interp, '-',
              label="Optimized Trendline")
     plt.xlabel('Pulse Duration [ms]')
-    plt.ylabel('Voltage Amplitude [ms]')
+    plt.ylabel('Voltage Amplitude [V]')
+    plt.title("Strength-Duration Curve")
     plt.legend()
     plt.show()
 
@@ -138,6 +160,7 @@ def plot_energy_curve(pulse_duration, voltage_amp, pacing_resistance):
     energy_surface = ax.plot_surface(pulse_duration, voltage_amp, energy)
     plt.xlabel('Pulse Duration [ms]')
     plt.ylabel('Voltage Amplitude [ms]')
+    plt.title("Energy Plot [J]")
     plt.show()
 
 
@@ -148,8 +171,8 @@ def patient_data_manipulation(pulse_duration_experimental,
     chronaxie, minimum pacing energy, plots strength duration curve,
     and plots energy curve.
     """
-    rheobase, chronaxie = find_power_trend_line(pulse_duration_experimental,
-                                                voltage_amp_experimental)
+    rheobase, chronaxie = strength_duration_trend_line(
+        pulse_duration_experimental, voltage_amp_experimental)
     pacing_resistance = 1000   # [ohms] total pacing impedence
     min_pulse_energy = calculate_energy(rheobase, chronaxie, pacing_resistance)
     print("Minimum pacing energy to stimulate myocardial \
@@ -158,8 +181,6 @@ tissue is {} Joules".format(min_pulse_energy))
     voltage_amp_optimized = calculate_capture_voltage(rheobase,
                                                       chronaxie,
                                                       pulse_duration_optimized)
-    pulse_energy = calculate_energy(pulse_duration_optimized,
-                                    voltage_amp_optimized, pacing_resistance)
     plot_strength_duration_curve(pulse_duration_experimental,
                                  voltage_amp_experimental,
                                  pulse_duration_optimized,
@@ -172,21 +193,36 @@ tissue is {} Joules".format(min_pulse_energy))
 if __name__ == "__main__":
     # Sample Strength-duration data
 
-    # patient 1
+    # _____ PATIENT 1 ______
     # https://d1wqtxts1xzle7.cloudfront.net/50956640/j.1540-8159.2009.02456.x2x0161218-19709-1lbuxg3-with-cover-page-v2.pdf?Expires=1635175866&Signature=N-ROBbokpqOa-5ioS8HXjMkeKh2I7sGkPqwLSjghrTBY7wRHJ75ELUi2FyERHH3acmAdyosEmHjI14bsrWXjqBZfxheNTCjoXw8qNEmJFiRXeWNbcy4kvfvMrdIDYqUcCFME-~beHZc51a4AazX4JsYplcBhMsVn9ljTvyy-tW4x21UFg31FaQzLI~yt2mevWPPXGYqpeoK62G7PesuSft~r-6g-HHU6DoBxXOH8rO01y0N5EZ2TT7yVx8xIrDASKRl4t~VQryRaK6kMWrgJ5EEmJTZDWHXnBI3aB7HS3PyHpnHZigCs8MiLGMJm7P0IMf5NV9XTUOXFbCBf7E1Zww__&Key-Pair-Id=APKAJLOHF5GGSLRBV4ZA
 
-    """
-    # [ms] Pulse duration of patient 1
+    # Pulse duration [ms] of patient 1
     duration_experimental = [0.1, 0.2, 0.3, 0.4, 0.5, 1, 1.4]
-    # [V] Voltage amplitude of patient 1
+    # Voltage amplitude [V] of patient 1
     voltage_experimental = [5, 3.5, 2.8, 2.6, 2.4, 2.2, 2.2]
     rheobase1, chronaxie1, min_pulse_energy = patient_data_manipulation(
         duration_experimental, voltage_experimental)
-    """
 
-    # [ms] Pulse duration of patient 1
-    duration_experimental = [0.2, 0.4, 1]
-    # [V] Voltage amplitude of patient 1
-    voltage_experimental = [3.5, 2.6, 2.2]
+    # Calculating Percent difference between experimental voltage amplitude
+    # and voltage amplitude measured by the capture threshold algorithm
+    exp_voltage = [5, 3.5, 2.8, 2.6, 2.4, 2.2, 2.2]
+    calc_voltage = [4.99, 3.61, 2.85, 2.71, 2.44, 2.25, 2.25]
+    percent_dif_list = percent_difference(calc_voltage, exp_voltage)
+    print(percent_dif_list)
+
+    # _____ PATIENT 2 ______
+    #  https://www.sciencedirect.com/science/article/abs/pii/S1547527119305454
+
+    # Pulse duration [ms] of patient 2
+    duration_experimental = [0.3, 0.5, 0.8, 1, 1.5]
+    # Voltage amplitude [V] of patient 2
+    voltage_experimental = [2.25, 1.55, 1.25, 1.15, 0.92]
     rheobase1, chronaxie1, min_pulse_energy = patient_data_manipulation(
         duration_experimental, voltage_experimental)
+
+    # Calculating Percent difference between experimental voltage amplitude
+    # and voltage amplitude measured by the capture threshold algorithm
+    exp_voltage = [2.25, 1.55, 1.25, 1.15, 0.92]
+    calc_voltage = [2.25, 1.61, 1.27, 1.15, 0.95]
+    percent_dif_list = percent_difference(calc_voltage, exp_voltage)
+    print(percent_dif_list)
