@@ -4,7 +4,6 @@
 
 # Import necessary packages
 import numpy as np
-import logging
 
 
 def find_nearest(a, a0):
@@ -38,7 +37,7 @@ def generate_capture_data(filename: str, duration: int or float,
         (3) Capture Status (1 = capture, 0 = no capture)
 
     Args:
-        filename (str): name of test data file
+        filename (str): name of test data file to be created
         duration (int or float): pulse duration
         capture_voltage(): min stimulation voltage that
                            captures myocardial tissue at
@@ -93,8 +92,18 @@ if __name__ == "__main__":
     # Sample Strength-duration data
     # https://d1wqtxts1xzle7.cloudfront.net/50956640/j.1540-8159.2009.02456.x2x0161218-19709-1lbuxg3-with-cover-page-v2.pdf?Expires=1635175866&Signature=N-ROBbokpqOa-5ioS8HXjMkeKh2I7sGkPqwLSjghrTBY7wRHJ75ELUi2FyERHH3acmAdyosEmHjI14bsrWXjqBZfxheNTCjoXw8qNEmJFiRXeWNbcy4kvfvMrdIDYqUcCFME-~beHZc51a4AazX4JsYplcBhMsVn9ljTvyy-tW4x21UFg31FaQzLI~yt2mevWPPXGYqpeoK62G7PesuSft~r-6g-HHU6DoBxXOH8rO01y0N5EZ2TT7yVx8xIrDASKRl4t~VQryRaK6kMWrgJ5EEmJTZDWHXnBI3aB7HS3PyHpnHZigCs8MiLGMJm7P0IMf5NV9XTUOXFbCBf7E1Zww__&Key-Pair-Id=APKAJLOHF5GGSLRBV4ZA
 
-    # patient 1
+    # ____PATIENT 1____
+    # Pulse duration [ms] of patient 1
     duration_experimental = [0.1, 0.2, 0.3, 0.4, 0.5, 1, 1.4]
+    # Voltage amplitude [V] of patient 1
     voltage_experimental = [5, 3.5, 2.8, 2.6, 2.4, 2.2, 2.2]
     create_patient_capture_data_files(duration_experimental,
                                       voltage_experimental, "patient1")
+
+    # ____PATIENT 2____
+    # Pulse duration [ms] of patient 2
+    duration_experimental = [0.3, 0.5, 0.8, 1, 1.5]
+    # Voltage amplitude [V] of patient 2
+    voltage_experimental = [2.25, 1.55, 1.25, 1.15, 0.92]
+    create_patient_capture_data_files(duration_experimental,
+                                      voltage_experimental, "patient2")
