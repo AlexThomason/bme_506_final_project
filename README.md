@@ -4,7 +4,7 @@ Author: Alex Thomason
 
 ## Final Report
 View the final report of this project here: 
-https://github.com/AlexThomason/bme_506_final_project/blob/README/Final%20Project%20-%20Energy%20Saving%20Algorithm.pdf
+https://github.com/AlexThomason/bme_506_final_project/blob/main/Final%20Project%20-%20Energy%20Saving%20Algorithm.pdf
 
 This report contains the following information plus some additional testing of the algorithm.
 
