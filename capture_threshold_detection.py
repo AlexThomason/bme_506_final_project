@@ -228,7 +228,7 @@ if __name__ == "__main__":
                              "patient1_1.4ms.csv"]
     p1_rheobase, p1_chronaxie = patient_strength_duration_data(
         "patient1", p1_data_filename_list)
-    
+
     """
     p1_data_filename_list = ["patient1_0.2ms.csv",
                              "patient1_0.3ms.csv",
