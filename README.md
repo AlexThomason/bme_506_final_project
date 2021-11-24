@@ -47,7 +47,8 @@ Figure 4. Flow Diagram - Repository Modules
 
 ## requirements.txt
 Includes necessary packages for the code to run properly. To run the code, create a virtual environment with python by typing ‘python -m venv <VirtualEnvironmentName>’ where <VirtualEnvironmentName> is the desired name of the virtual environment. For example python -m venv MyVenv makes a virtual environment with the name MyVenv. For Linux (MacOS), activate the virtual environment by typing ‘source <VirtualEnvironmentName>/bin/activate’ in the same folder in which you created the virtual environment. After activating the virtual environment, type pip install -r requirements.txt to install the packages. Refer to [6] for more detailed instructions on virtual environments.
-generate_capture_data.py
+
+## generate_capture_data.py
 Some “fake” data will be generated to simulate when the patient’s myocardial tissue would be captured. This data will have 3 columns:
 1. Stimulation Duration (constant)
 2. Stimulation Amplitude
